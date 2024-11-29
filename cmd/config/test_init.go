@@ -11,15 +11,13 @@ type ConfigUpdateable struct {
 	DailyFiatAmount map[string]float64
 }
 
-var loc, _ = time.LoadLocation("Asia/Singapore")
-var TestNow = time.Date(2024, time.November, 3, 14, 30, 0, 0, loc)
-var TestNowDate = time.Date(2024, time.November, 3, 0, 0, 0, 0, loc)
+var TestNow = time.Date(2024, time.November, 3, 14, 30, 0, 0, time.UTC)
+var TestNowDate = time.Date(2024, time.November, 3, 0, 0, 0, 0, time.UTC)
 var TestNowDateStr = "03/11/2024"
 
 func TestInit(u *ConfigUpdateable, now *time.Time) {
 	config = &Config{
 		IsSandboxEnv: true,
-		Location:     "Asia/Singapore",
 		CryptoTickers: map[string]bool{
 			"BTC": true,
 			"ETH": true,

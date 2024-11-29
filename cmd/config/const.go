@@ -5,7 +5,6 @@ type envKey string
 const (
 	env_EnvKey envKey = "ENV"
 
-	location_EnvKey                  envKey = "LOCATION"
 	cryptoTickers_EnvKey             envKey = "CRYPTO_TICKERS"
 	geminiApiKey_EnvKey              envKey = "GEMINI_API_KEY"
 	geminiApiSecret_EnvKey           envKey = "GEMINI_API_SECRET"

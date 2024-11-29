@@ -7,7 +7,6 @@ import "google.golang.org/api/sheets/v4"
 // Private vars are only declared in env config, and not used elsewhere
 type Config struct {
 	IsSandboxEnv  bool
-	Location      string
 	CryptoTickers map[string]bool
 	OrderMetadata OrderMetadata
 	GeminiApi     GeminiApi

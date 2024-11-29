@@ -9,3 +9,9 @@ test:
 
 prod_logs:
 	heroku logs --remote production
+
+ssh_staging:
+	heroku run bash -a gemini-dca-staging
+
+ssh_prod:
+	heroku run bash -a gemini-dca-prod

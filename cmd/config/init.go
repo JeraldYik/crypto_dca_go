@@ -11,9 +11,6 @@ func initConfig() *Config {
 	env := mustRetrieveConfigFromEnv(env_EnvKey)
 	config.IsSandboxEnv = env != string(production)
 
-	location := mustRetrieveConfigFromEnv(location_EnvKey)
-	config.Location = location
-
 	cryptoTickers := mustRetrieveConfigFromEnv(cryptoTickers_EnvKey)
 	cryptoTickerSlice := mustTransformArrayStringToArray(cryptoTickers)
 	config.CryptoTickers = mustTransformSliceToMap(cryptoTickers_EnvKey, cryptoTickerSlice)

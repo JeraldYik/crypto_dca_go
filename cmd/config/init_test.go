@@ -16,7 +16,6 @@ func Test_initConfig(t *testing.T) {
 		s := fmt.Sprintf("%02d/%02d/%04d", twoDaysBefore.Day(), twoDaysBefore.Month(), twoDaysBefore.Year())
 
 		os.Setenv(string(env_EnvKey), "sandbox")
-		os.Setenv(string(location_EnvKey), "Asia/Singapore")
 		os.Setenv(string(cryptoTickers_EnvKey), "BTC,ETH")
 		os.Setenv(string(geminiApiKey_EnvKey), "gemini_api_key")
 		os.Setenv(string(geminiApiSecret_EnvKey), "gemini_api_secret")

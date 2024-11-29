@@ -126,7 +126,6 @@ func Test_mustGetDifferenceInDaysFromStartDate(t *testing.T) {
 		defer util.RecoverAndGraceFullyExitTestHelper(t, "")
 		twoDaysBefore := time.Now().Add(time.Hour * -48)
 		Set(&Config{
-			Location: "Asia/Singapore",
 			GoogleSheet: GoogleSheet{
 				startDate: fmt.Sprintf("%02d/%02d/%04d", twoDaysBefore.Day(), twoDaysBefore.Month(), twoDaysBefore.Year()),
 			},
@@ -139,7 +138,6 @@ func Test_mustGetDifferenceInDaysFromStartDate(t *testing.T) {
 		defer util.RecoverAndGraceFullyExitTestHelper(t, "Start date of recording is later than today")
 		twoDaysLater := time.Now().Add(time.Hour * 48)
 		Set(&Config{
-			Location: "Asia/Singapore",
 			GoogleSheet: GoogleSheet{
 				startDate: fmt.Sprintf("%v/%v/%v", twoDaysLater.Year(), twoDaysLater.Format("01"), twoDaysLater.Day()),
 			},
