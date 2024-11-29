@@ -1,0 +1,20 @@
+version: "3.7"
+services:
+  postgres:
+    image: postgres:11
+    restart: always
+    container_name: geminidca_postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=geminidca_db
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - "5432:5432"
+    volumes:
+      - geminidca_db_data:/var/lib/postgresql/data
+volumes:
+  geminidca_db_data:
