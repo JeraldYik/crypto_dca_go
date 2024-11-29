@@ -1,8 +1,11 @@
-run:
-	go run main.go
+run: # binary in heroku dyno
+	./bin/crypto_dca_go
 
 dev:
 	source conf/dev.env && go run main.go
 
 test:
 	go test -count=1 ./...
+
+prod_logs:
+	heroku logs --remote production
