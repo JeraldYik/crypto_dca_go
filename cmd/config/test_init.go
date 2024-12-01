@@ -87,5 +87,5 @@ func TestInit(u *ConfigUpdateable, now *time.Time) {
 		}
 	}
 
-	timeInit(config, now)
+	timeInit(now)
 }

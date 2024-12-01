@@ -36,7 +36,7 @@ func Test_initConfig(t *testing.T) {
 
 		// expected
 		c := initConfig()
-		timeInit(c, &TestNow)
+		timeInit(&TestNow)
 		addTimeRelatedConfigs(c)
 
 		// actual

@@ -10,7 +10,7 @@ type Time struct {
 
 var t Time
 
-func timeInit(config *Config, now *time.Time) {
+func timeInit(now *time.Time) {
 	if now != nil {
 		t.now = *now
 	} else {
@@ -23,7 +23,7 @@ func GetTime() *Time {
 }
 
 func (t Time) NowTimestamp() int64 {
-	return t.now.Unix()
+	return t.now.UnixNano()
 }
 
 func (t Time) GetTodayDate() time.Time {

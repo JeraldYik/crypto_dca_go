@@ -130,7 +130,7 @@ func Test_mustGetDifferenceInDaysFromStartDate(t *testing.T) {
 				startDate: fmt.Sprintf("%02d/%02d/%04d", twoDaysBefore.Day(), twoDaysBefore.Month(), twoDaysBefore.Year()),
 			},
 		})
-		timeInit(Get(), nil)
+		timeInit(nil)
 		val := mustGetDifferenceInDaysFromStartDate(Get())
 		assert.Equal(t, 2, val)
 	})
@@ -142,7 +142,7 @@ func Test_mustGetDifferenceInDaysFromStartDate(t *testing.T) {
 				startDate: fmt.Sprintf("%v/%v/%v", twoDaysLater.Year(), twoDaysLater.Format("01"), twoDaysLater.Day()),
 			},
 		})
-		timeInit(Get(), nil)
+		timeInit(nil)
 		mustGetDifferenceInDaysFromStartDate(Get())
 	})
 }

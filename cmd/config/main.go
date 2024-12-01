@@ -4,7 +4,7 @@ var config *Config
 
 func MustInit() {
 	Set(initConfig())
-	timeInit(Get(), nil)
+	timeInit(nil)
 	addTimeRelatedConfigs(config)
 }
 
