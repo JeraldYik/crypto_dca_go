@@ -138,6 +138,7 @@ func handlerCexApiCallsOrderOpenThenCancel(ctx context.Context, ticker string, q
 	for orderOpenQueryStatusWindowCounter < config.OrderOpenQueryStatusWindowCount {
 		orderOpenQueryStatusWindowCounter++
 		if !util.IsTestFlow(ctx) {
+			log.Printf("[handler.handlerCexApiCallsOrderOpenThenCancel] '%s' waiting for 1 min\n", ticker)
 			time.Sleep(1 * time.Minute)
 		}
 

@@ -22,7 +22,8 @@ func GetTime() *Time {
 	return &t
 }
 
-func (t Time) NowTimestamp() int64 {
+func (t Time) NowTimestamp(now *time.Time) int64 {
+	timeInit(now)
 	return t.now.UnixNano()
 }
 

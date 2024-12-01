@@ -12,7 +12,7 @@ import (
 
 // New Order
 func (api *Api) newOrder(ticker, price, amount string) (*Order, error) {
-	now := config.GetTime().NowTimestamp()
+	now := config.GetTime().NowTimestamp(nil)
 	quoteCurrency := AppendTickerWithQuoteCurrency(ticker)
 	params := map[string]any{
 		"request":         NewOrderURI,
@@ -47,7 +47,7 @@ func (api *Api) newOrder(ticker, price, amount string) (*Order, error) {
 func (api *Api) orderStatus(orderID string) (*Order, error) {
 	params := map[string]any{
 		"request":  OrderStatusURI,
-		"nonce":    config.GetTime().NowTimestamp(),
+		"nonce":    config.GetTime().NowTimestamp(nil),
 		"order_id": orderID,
 	}
 
@@ -73,7 +73,7 @@ func (api *Api) orderStatus(orderID string) (*Order, error) {
 func (api *Api) cancelOrder(orderID string) (*Order, error) {
 	params := map[string]any{
 		"request":  CancelOrderURI,
-		"nonce":    config.GetTime().NowTimestamp(),
+		"nonce":    config.GetTime().NowTimestamp(nil),
 		"order_id": orderID,
 	}
 
