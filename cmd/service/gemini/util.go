@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"reflect"
+	"strings"
 	"time"
 
 	"github.com/jeraldyik/crypto_dca_go/cmd/util"
@@ -58,7 +59,7 @@ func RetryWrapper(ctx context.Context, fnName string, fn any, args ...any) ([]re
 // To hardcode this, since metadata does not change
 func AppendTickerWithQuoteCurrency(ticker string) string {
 	if ticker == BTC || ticker == ETH {
-		return ticker + SGD
+		return strings.ToLower(ticker + SGD)
 	}
-	return ticker + USD
+	return strings.ToLower(ticker + USD)
 }

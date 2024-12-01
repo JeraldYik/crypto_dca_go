@@ -30,21 +30,21 @@ func Test_handleOrder(t *testing.T) {
 			"tick_size": 1E-8,
 			"quote_increment": 0.01
 		}`)
-		httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerDetailsURI, "BTCSGD"), responder)
+		httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerDetailsURI, "btcsgd"), responder)
 		responder = httpmock.NewStringResponder(http.StatusOK, `{
 			"tick_size": 1E-6,
 			"quote_increment": 0.01
 		}`)
-		httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerDetailsURI, "ETHSGD"), responder)
+		httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerDetailsURI, "ethsgd"), responder)
 
 		responder = httpmock.NewStringResponder(http.StatusOK, `{
 			"bid": "9345.70"
 		}`)
-		httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "BTCSGD"), responder)
+		httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "btcsgd"), responder)
 		responder = httpmock.NewStringResponder(http.StatusOK, `{
 			"bid": "9345.70"
 		}`)
-		httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "ETHSGD"), responder)
+		httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "ethsgd"), responder)
 
 		responder = httpmock.NewStringResponder(http.StatusOK, `{
 				"order_id": "106817811", 
@@ -125,12 +125,12 @@ func Test_handlerCexApiCalls(t *testing.T) {
 			"tick_size": 1E-8,
 			"quote_increment": 0.01
 		}`)
-		httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerDetailsURI, "BTCSGD"), responder)
+		httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerDetailsURI, "btcsgd"), responder)
 
 		responder = httpmock.NewStringResponder(http.StatusOK, `{
 			"bid": "9345.70"
 		}`)
-		httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "BTCSGD"), responder)
+		httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "btcsgd"), responder)
 
 		responder = httpmock.NewStringResponder(http.StatusOK, `{
 				"order_id": "106817811", 
@@ -160,7 +160,7 @@ func Test_handlerCexApiCalls(t *testing.T) {
 	t.Run("error_GetQuoteIncrementAndTickSize", func(t *testing.T) {
 		defer httpmock.Reset()
 		responder := httpmock.NewStringResponder(http.StatusInternalServerError, ``)
-		httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerDetailsURI, "BTCSGD"), responder)
+		httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerDetailsURI, "btcsgd"), responder)
 
 		postOrderMap := &PostOrderDetails{
 			m: treemap.NewWithStringComparator(),
@@ -177,10 +177,10 @@ func Test_handlerCexApiCalls(t *testing.T) {
 			"tick_size": 1E-8,
 			"quote_increment": 0.01
 		}`)
-		httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerDetailsURI, "BTCSGD"), responder)
+		httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerDetailsURI, "btcsgd"), responder)
 
 		responder = httpmock.NewStringResponder(http.StatusInternalServerError, ``)
-		httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "BTCSGD"), responder)
+		httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "btcsgd"), responder)
 
 		postOrderMap := &PostOrderDetails{
 			m: treemap.NewWithStringComparator(),
@@ -197,12 +197,12 @@ func Test_handlerCexApiCalls(t *testing.T) {
 			"tick_size": 1E-8,
 			"quote_increment": 0.01
 		}`)
-		httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerDetailsURI, "BTCSGD"), responder)
+		httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerDetailsURI, "btcsgd"), responder)
 
 		responder = httpmock.NewStringResponder(http.StatusOK, `{
 			"bid": "9345.70"
 		}`)
-		httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "BTCSGD"), responder)
+		httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "btcsgd"), responder)
 
 		responder = httpmock.NewStringResponder(http.StatusOK, `{
 				"order_id": "106817811", 
@@ -262,7 +262,7 @@ func Test_handlerCexApiCallsOrderOpenThenCancel(t *testing.T) {
 				responder := httpmock.NewStringResponder(http.StatusOK, `{
 					"bid": "9345.70"
 				}`)
-				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "BTCSGD"), responder)
+				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "btcsgd"), responder)
 
 				responder = httpmock.NewStringResponder(http.StatusOK, `{
 						"order_id": "106817811", 
@@ -299,7 +299,7 @@ func Test_handlerCexApiCallsOrderOpenThenCancel(t *testing.T) {
 				responder := httpmock.NewStringResponder(http.StatusOK, `{
 					"bid": "9345.70"
 				}`)
-				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "BTCSGD"), responder)
+				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "btcsgd"), responder)
 
 				responder = httpmock.NewStringResponder(http.StatusOK, `{
 						"order_id": "106817811", 
@@ -346,7 +346,7 @@ func Test_handlerCexApiCallsOrderOpenThenCancel(t *testing.T) {
 				responder := httpmock.NewStringResponder(http.StatusOK, `{
 					"bid": "9345.70"
 				}`)
-				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "BTCSGD"), responder)
+				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "btcsgd"), responder)
 
 				responder = httpmock.NewStringResponder(http.StatusOK, `{
 						"order_id": "106817811", 
@@ -391,7 +391,7 @@ func Test_handlerCexApiCallsOrderOpenThenCancel(t *testing.T) {
 			name: "error_GetTickerBestBidPrice",
 			setup: func() func() {
 				responder := httpmock.NewStringResponder(http.StatusInternalServerError, ``)
-				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "BTCSGD"), responder)
+				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "btcsgd"), responder)
 
 				return func() {
 					httpmock.Reset()
@@ -411,7 +411,7 @@ func Test_handlerCexApiCallsOrderOpenThenCancel(t *testing.T) {
 				responder := httpmock.NewStringResponder(http.StatusOK, `{
 					"bid": "9345.70"
 				}`)
-				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "BTCSGD"), responder)
+				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "btcsgd"), responder)
 
 				responder = httpmock.NewStringResponder(http.StatusInternalServerError, ``)
 				httpmock.RegisterResponder(http.MethodPost, gemini.NewOrderURI, responder)
@@ -434,7 +434,7 @@ func Test_handlerCexApiCallsOrderOpenThenCancel(t *testing.T) {
 				responder := httpmock.NewStringResponder(http.StatusOK, `{
 					"bid": "9345.70"
 				}`)
-				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "BTCSGD"), responder)
+				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "btcsgd"), responder)
 
 				responder = httpmock.NewStringResponder(http.StatusOK, `{
 						"order_id": "106817811", 
@@ -467,7 +467,7 @@ func Test_handlerCexApiCallsOrderOpenThenCancel(t *testing.T) {
 				responder := httpmock.NewStringResponder(http.StatusOK, `{
 					"bid": "9345.70"
 				}`)
-				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "BTCSGD"), responder)
+				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "btcsgd"), responder)
 
 				responder = httpmock.NewStringResponder(http.StatusOK, `{
 						"order_id": "106817811", 
@@ -497,7 +497,7 @@ func Test_handlerCexApiCallsOrderOpenThenCancel(t *testing.T) {
 				responder := httpmock.NewStringResponder(http.StatusOK, `{
 					"bid": "9345.70"
 				}`)
-				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "BTCSGD"), responder)
+				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "btcsgd"), responder)
 
 				responder = httpmock.NewStringResponder(http.StatusOK, `{
 						"order_id": "106817811", 
@@ -540,7 +540,7 @@ func Test_handlerCexApiCallsOrderOpenThenCancel(t *testing.T) {
 				responder := httpmock.NewStringResponder(http.StatusOK, `{
 					"bid": "9345.70"
 				}`)
-				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "BTCSGD"), responder)
+				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "btcsgd"), responder)
 
 				responder = httpmock.NewStringResponder(http.StatusOK, `{
 						"order_id": "106817811", 
@@ -580,7 +580,7 @@ func Test_handlerCexApiCallsOrderOpenThenCancel(t *testing.T) {
 				responder := httpmock.NewStringResponder(http.StatusOK, `{
 					"bid": "9345.70"
 				}`)
-				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "BTCSGD"), responder)
+				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "btcsgd"), responder)
 
 				responder = httpmock.NewStringResponder(http.StatusOK, `{
 						"order_id": "106817811", 

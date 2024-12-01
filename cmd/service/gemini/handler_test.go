@@ -31,7 +31,7 @@ func TestApi_GetQuoteIncrementAndTickSize(t *testing.T) {
 					"tick_size": 1E-8,
 					"quote_increment": 0.01
 				}`)
-				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(TickerDetailsURI, "BTCSGD"), responder)
+				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(TickerDetailsURI, "btcsgd"), responder)
 				return func() {
 					httpmock.Reset()
 				}
@@ -46,7 +46,7 @@ func TestApi_GetQuoteIncrementAndTickSize(t *testing.T) {
 			name: "error",
 			setup: func() func() {
 				responder := httpmock.NewStringResponder(http.StatusInternalServerError, ``)
-				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(TickerDetailsURI, "BTCSGD"), responder)
+				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(TickerDetailsURI, "btcsgd"), responder)
 				return func() {
 					httpmock.Reset()
 				}
@@ -98,7 +98,7 @@ func TestApi_GetTickerBestBidPrice(t *testing.T) {
 				responder := httpmock.NewStringResponder(http.StatusOK, `{
 					"bid": "9345.70"
 				}`)
-				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(TickerV2URI, "BTCSGD"), responder)
+				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(TickerV2URI, "btcsgd"), responder)
 				return func() {
 					httpmock.Reset()
 				}
@@ -112,7 +112,7 @@ func TestApi_GetTickerBestBidPrice(t *testing.T) {
 			name: "error",
 			setup: func() func() {
 				responder := httpmock.NewStringResponder(http.StatusInternalServerError, ``)
-				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(TickerV2URI, "BTCSGD"), responder)
+				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(TickerV2URI, "btcsgd"), responder)
 				return func() {
 					httpmock.Reset()
 				}

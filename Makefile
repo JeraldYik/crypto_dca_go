@@ -14,4 +14,4 @@ ssh_staging:
 	heroku run bash -a gemini-dca-staging
 
 ssh_prod:
-	heroku run bash -a gemini-dca-prod
+	heroku run bash -a gemini-dca-production

@@ -21,10 +21,20 @@ type Api struct {
 	secret string
 }
 
+func New(key, secret string, live bool) *Api {
+	var url string
+	if live {
+		url = baseURL
+	} else {
+		url = sandboxURL
+	}
+	return &Api{url: url, key: key, secret: secret}
+}
+
 // buildHeader handles the conversion of post parameters into headers formatted
 // according to Gemini specification. Resulting headers include the API key,
 // the payload and the signature.
-func (api *Api) buildHeader(req *map[string]any) http.Header {
+func (api *Api) buildHeader(req map[string]any) http.Header {
 
 	reqStr, _ := json.Marshal(req)
 	payload := base64.StdEncoding.EncodeToString([]byte(reqStr))
@@ -37,6 +47,9 @@ func (api *Api) buildHeader(req *map[string]any) http.Header {
 	signature := hex.EncodeToString(mac.Sum(nil))
 
 	header := http.Header{}
+	header.Set("Content-Length", "0")
+	header.Set("Content-Type", "text/plain")
+	header.Set("Cache-Control", "no-cache")
 	header.Set("X-GEMINI-APIKEY", api.key)
 	header.Set("X-GEMINI-PAYLOAD", payload)
 	header.Set("X-GEMINI-SIGNATURE", signature)
@@ -47,8 +60,6 @@ func (api *Api) buildHeader(req *map[string]any) http.Header {
 // request makes the HTTP request to Gemini and handles any returned errors
 func (api *Api) request(verb, path string, params map[string]any) ([]byte, error) {
 	url := api.url + path
-
-	log.Printf("[gemini.request] request verb:%s, url:%s, params:%s\n", verb, url, params)
 
 	req, err := http.NewRequest(verb, url, bytes.NewBuffer([]byte{}))
 	if err != nil {
@@ -63,9 +74,11 @@ func (api *Api) request(verb, path string, params map[string]any) ([]byte, error
 			}
 			req.URL.RawQuery = q.Encode()
 		} else {
-			req.Header = api.buildHeader(&params)
+			req.Header = api.buildHeader(params)
 		}
 	}
+
+	log.Printf("[gemini.request] request verb:%s, url:%s, params:%+v\n", verb, url, params)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -108,14 +121,4 @@ func (api *Api) request(verb, path string, params map[string]any) ([]byte, error
 	log.Printf("[gemini.request] response.body: %v\n", string(body))
 
 	return body, nil
-}
-
-func New(key, secret string, live bool) *Api {
-	var url string
-	if live {
-		url = baseURL
-	} else {
-		url = sandboxURL
-	}
-	return &Api{url: url, key: key, secret: secret}
 }

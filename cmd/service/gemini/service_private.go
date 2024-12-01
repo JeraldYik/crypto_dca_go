@@ -21,7 +21,7 @@ func (api *Api) newOrder(ticker, price, amount string) (*Order, error) {
 		"symbol":          quoteCurrency,
 		"price":           price,
 		"amount":          amount,
-		"side":            "BUY",
+		"side":            "buy",
 		"type":            "exchange limit",
 	}
 

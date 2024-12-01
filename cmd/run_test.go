@@ -37,21 +37,21 @@ func TestRun(t *testing.T) {
 					"tick_size": 1E-8,
 					"quote_increment": 0.01
 				}`)
-				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerDetailsURI, "BTCSGD"), responder)
+				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerDetailsURI, "btcsgd"), responder)
 				responder = httpmock.NewStringResponder(http.StatusOK, `{
 					"tick_size": 1E-6,
 					"quote_increment": 0.01
 				}`)
-				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerDetailsURI, "ETHSGD"), responder)
+				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerDetailsURI, "ethsgd"), responder)
 
 				responder = httpmock.NewStringResponder(http.StatusOK, `{
 					"bid": "9345.70"
 				}`)
-				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "BTCSGD"), responder)
+				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "btcsgd"), responder)
 				responder = httpmock.NewStringResponder(http.StatusOK, `{
 					"bid": "9345.70"
 				}`)
-				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "ETHSGD"), responder)
+				httpmock.RegisterResponder(http.MethodGet, fmt.Sprintf(gemini.TickerV2URI, "ethsgd"), responder)
 
 				responder = httpmock.NewStringResponder(http.StatusOK, `{
 						"order_id": "106817811",
