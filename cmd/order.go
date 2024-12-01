@@ -127,7 +127,7 @@ func handlerCexApiCallsOrderOpenThenCancel(ctx context.Context, ticker string, q
 	}
 
 	// If order fulfilled - return order
-	if order.IsLive {
+	if !order.IsLive {
 		log.Printf("[handler.handlerCexApiCallsOrderOpenThenCancel] '%s' Order is fulfilled\n", ticker)
 		return order, nil
 	}
@@ -185,7 +185,7 @@ func handlerCexApiCallsOrderOpenQueryStatus(ctx context.Context, ticker string, 
 	}
 
 	// If order fulfilled - return order
-	if queryOrder.IsLive {
+	if !queryOrder.IsLive {
 		log.Printf("[handler.handlerCexApiCallsOrderOpenQueryStatus] '%s' Order is fulfilled\n", ticker)
 		return queryOrder, false, nil
 	}

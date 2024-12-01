@@ -49,7 +49,7 @@ func Test_handleOrder(t *testing.T) {
 		responder = httpmock.NewStringResponder(http.StatusOK, `{
 				"order_id": "106817811", 
 				"avg_execution_price": "3632.8508430064554",
-				"is_live": true, 
+				"is_live": false, 
 				"is_cancelled": false, 
 				"executed_amount": "3.7567928949",
 				"client_order_id": "20190110-4738721"
@@ -135,7 +135,7 @@ func Test_handlerCexApiCalls(t *testing.T) {
 		responder = httpmock.NewStringResponder(http.StatusOK, `{
 				"order_id": "106817811", 
 				"avg_execution_price": "3632.8508430064554",
-				"is_live": true, 
+				"is_live": false, 
 				"is_cancelled": false, 
 				"executed_amount": "3.7567928949",
 				"client_order_id": "20190110-4738721"
@@ -207,7 +207,7 @@ func Test_handlerCexApiCalls(t *testing.T) {
 		responder = httpmock.NewStringResponder(http.StatusOK, `{
 				"order_id": "106817811", 
 				"avg_execution_price": "3632.8508430064554",
-				"is_live": false, 
+				"is_live": true, 
 				"is_cancelled": false, 
 				"executed_amount": "3.7567928949",
 				"client_order_id": "20190110-4738721"
@@ -220,7 +220,7 @@ func Test_handlerCexApiCalls(t *testing.T) {
 		responder = httpmock.NewStringResponder(http.StatusOK, `{
 				"order_id": "106817811", 
 				"avg_execution_price": "3632.8508430064554",
-				"is_live": false, 
+				"is_live": true, 
 				"is_cancelled": true, 
 				"executed_amount": "3.7567928949",
 				"client_order_id": "20190110-4738721"
@@ -267,7 +267,7 @@ func Test_handlerCexApiCallsOrderOpenThenCancel(t *testing.T) {
 				responder = httpmock.NewStringResponder(http.StatusOK, `{
 						"order_id": "106817811", 
 						"avg_execution_price": "3632.8508430064554",
-						"is_live": true, 
+						"is_live": false, 
 						"is_cancelled": false, 
 						"executed_amount": "3.7567928949",
 						"client_order_id": "20190110-4738721"
@@ -286,7 +286,7 @@ func Test_handlerCexApiCallsOrderOpenThenCancel(t *testing.T) {
 			want: &gemini.Order{
 				OrderID:           "106817811",
 				AvgExecutionPrice: 3632.8508430064554,
-				IsLive:            true,
+				IsLive:            false,
 				IsCancelled:       false,
 				ExecutedAmount:    3.7567928949,
 				ClientOrderID:     "20190110-4738721",
@@ -314,7 +314,7 @@ func Test_handlerCexApiCallsOrderOpenThenCancel(t *testing.T) {
 				responder = httpmock.NewStringResponder(http.StatusOK, `{
 						"order_id": "106817811", 
 						"avg_execution_price": "3632.8508430064554",
-						"is_live": true, 
+						"is_live": false, 
 						"is_cancelled": false, 
 						"executed_amount": "3.7567928949",
 						"client_order_id": "20190110-4738721"
@@ -333,7 +333,7 @@ func Test_handlerCexApiCallsOrderOpenThenCancel(t *testing.T) {
 			want: &gemini.Order{
 				OrderID:           "106817811",
 				AvgExecutionPrice: 3632.8508430064554,
-				IsLive:            true,
+				IsLive:            false,
 				IsCancelled:       false,
 				ExecutedAmount:    3.7567928949,
 				ClientOrderID:     "20190110-4738721",
@@ -361,7 +361,7 @@ func Test_handlerCexApiCallsOrderOpenThenCancel(t *testing.T) {
 				responder = httpmock.NewStringResponder(http.StatusOK, `{
 						"order_id": "106817811", 
 						"avg_execution_price": "3632.8508430064554",
-						"is_live": true, 
+						"is_live": false, 
 						"is_cancelled": false, 
 						"executed_amount": "3.7567928949",
 						"client_order_id": "20190110-4738721"
@@ -380,7 +380,7 @@ func Test_handlerCexApiCallsOrderOpenThenCancel(t *testing.T) {
 			want: &gemini.Order{
 				OrderID:           "106817811",
 				AvgExecutionPrice: 3632.8508430064554,
-				IsLive:            true,
+				IsLive:            false,
 				IsCancelled:       false,
 				ExecutedAmount:    3.7567928949,
 				ClientOrderID:     "20190110-4738721",
@@ -473,7 +473,7 @@ func Test_handlerCexApiCallsOrderOpenThenCancel(t *testing.T) {
 						"order_id": "106817811", 
 						"avg_execution_price": "3632.8508430064554",
 						"is_live": false, 
-						"is_cancelled": false, 
+						"is_cancelled": true, 
 						"executed_amount": "3.7567928949",
 						"client_order_id": "20190110-4738721"
 				}`)
@@ -502,7 +502,7 @@ func Test_handlerCexApiCallsOrderOpenThenCancel(t *testing.T) {
 				responder = httpmock.NewStringResponder(http.StatusOK, `{
 						"order_id": "106817811", 
 						"avg_execution_price": "3632.8508430064554",
-						"is_live": false, 
+						"is_live": true, 
 						"is_cancelled": false, 
 						"executed_amount": "3.7567928949",
 						"client_order_id": "20190110-4738721"
@@ -545,7 +545,7 @@ func Test_handlerCexApiCallsOrderOpenThenCancel(t *testing.T) {
 				responder = httpmock.NewStringResponder(http.StatusOK, `{
 						"order_id": "106817811", 
 						"avg_execution_price": "3632.8508430064554",
-						"is_live": false, 
+						"is_live": true, 
 						"is_cancelled": false, 
 						"executed_amount": "3.7567928949",
 						"client_order_id": "20190110-4738721"
@@ -585,7 +585,7 @@ func Test_handlerCexApiCallsOrderOpenThenCancel(t *testing.T) {
 				responder = httpmock.NewStringResponder(http.StatusOK, `{
 						"order_id": "106817811", 
 						"avg_execution_price": "3632.8508430064554",
-						"is_live": false, 
+						"is_live": true, 
 						"is_cancelled": false, 
 						"executed_amount": "3.7567928949",
 						"client_order_id": "20190110-4738721"
@@ -651,7 +651,7 @@ func Test_handlerCexApiCallsOrderOpenQueryStatus(t *testing.T) {
 				responder := httpmock.NewStringResponder(http.StatusOK, `{
 						"order_id": "106817811", 
 						"avg_execution_price": "3632.8508430064554",
-						"is_live": true, 
+						"is_live": false, 
 						"is_cancelled": false, 
 						"executed_amount": "3.7567928949",
 						"client_order_id": "20190110-4738721"
@@ -670,7 +670,7 @@ func Test_handlerCexApiCallsOrderOpenQueryStatus(t *testing.T) {
 			want: &gemini.Order{
 				OrderID:           "106817811",
 				AvgExecutionPrice: 3632.8508430064554,
-				IsLive:            true,
+				IsLive:            false,
 				IsCancelled:       false,
 				ExecutedAmount:    3.7567928949,
 				ClientOrderID:     "20190110-4738721",
@@ -710,7 +710,7 @@ func Test_handlerCexApiCallsOrderOpenQueryStatus(t *testing.T) {
 				responder := httpmock.NewStringResponder(http.StatusOK, `{
 						"order_id": "106817811", 
 						"avg_execution_price": "3632.8508430064554",
-						"is_live": false, 
+						"is_live": true, 
 						"is_cancelled": false, 
 						"executed_amount": "3.7567928949",
 						"client_order_id": "20190110-4738721"

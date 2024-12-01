@@ -166,7 +166,7 @@ func TestApi_CreateOrder(t *testing.T) {
 				responder := httpmock.NewStringResponder(http.StatusOK, `{
 						"order_id": "106817811", 
 						"avg_execution_price": "3632.8508430064554",
-						"is_live": true, 
+						"is_live": false, 
 						"is_cancelled": false, 
 						"executed_amount": "3.7567928949",
 						"client_order_id": "20190110-4738721"
@@ -185,7 +185,7 @@ func TestApi_CreateOrder(t *testing.T) {
 			want: &Order{
 				OrderID:           "106817811",
 				AvgExecutionPrice: 3632.8508430064554,
-				IsLive:            true,
+				IsLive:            false,
 				IsCancelled:       false,
 				ExecutedAmount:    3.7567928949,
 				ClientOrderID:     "20190110-4738721",
@@ -231,7 +231,7 @@ func TestApi_GetOrderStatus(t *testing.T) {
 				responder := httpmock.NewStringResponder(http.StatusOK, `{
 						"order_id": "106817811", 
 						"avg_execution_price": "3632.8508430064554",
-						"is_live": true, 
+						"is_live": false, 
 						"is_cancelled": false, 
 						"executed_amount": "3.7567928949",
 						"client_order_id": "20190110-4738721"
@@ -247,7 +247,7 @@ func TestApi_GetOrderStatus(t *testing.T) {
 			want: &Order{
 				OrderID:           "106817811",
 				AvgExecutionPrice: 3632.8508430064554,
-				IsLive:            true,
+				IsLive:            false,
 				IsCancelled:       false,
 				ExecutedAmount:    3.7567928949,
 				ClientOrderID:     "20190110-4738721",
