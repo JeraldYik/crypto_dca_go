@@ -6,10 +6,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jeraldyik/crypto_dca_go/internal/logger"
 	"github.com/stretchr/testify/assert"
 )
 
 func Test_initConfig(t *testing.T) {
+	logger.Init()
 	t.Run("ok", func(t *testing.T) {
 		// defer os.Clearenv()
 		twoDaysBefore := TestNow.Add(-1 * time.Hour * 48)

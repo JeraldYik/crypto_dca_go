@@ -3,7 +3,6 @@ package cmd
 import (
 	"context"
 	"errors"
-	"log"
 	"sync"
 	"time"
 
@@ -11,6 +10,7 @@ import (
 	"github.com/jeraldyik/crypto_dca_go/cmd/config"
 	"github.com/jeraldyik/crypto_dca_go/cmd/service/gemini"
 	"github.com/jeraldyik/crypto_dca_go/cmd/util"
+	"github.com/jeraldyik/crypto_dca_go/internal/logger"
 )
 
 type PostOrder struct {
@@ -26,6 +26,7 @@ type PostOrderDetails struct {
 
 // Entry point for creating & fulfilling orders
 func handleOrder(ctx context.Context) *treemap.Map {
+	location := "cmd.handlerOrder"
 	c := config.Get()
 	postOrderDetails := &PostOrderDetails{
 		m: treemap.NewWithStringComparator(),
@@ -39,7 +40,7 @@ func handleOrder(ctx context.Context) *treemap.Map {
 			util.RecoverAndGraceFullyExit()
 			// Check switch
 			if c.OrderMetadata.DailyFiatAmount[ticker] <= 0 {
-				log.Printf("[cmd.handlerOrder] Purchase for ticker '%s' is turned off\n", ticker)
+				logger.Warn(location, "Purchase for ticker '%s' is turned off", ticker)
 				return
 			}
 
@@ -59,12 +60,13 @@ func handleOrder(ctx context.Context) *treemap.Map {
 
 // Entry point for goroutine - Level 1
 func handlerCexApiCalls(ctx context.Context, ticker string, postOrderDetails *PostOrderDetails) {
+	location := "handler.handlerCexApiCalls"
 	geminiClient := gemini.GetClient()
 
 	// Get Symbol details
 	results, err := gemini.RetryWrapper(ctx, "GetQuoteIncrementAndTickSize", geminiClient.GetQuoteIncrementAndTickSize, ticker)
 	if err != nil {
-		log.Printf("[handler.handlerCexApiCalls] Error getting symbol details, err: %+v\n", err)
+		logger.Error(location, "[handler.handlerCexApiCalls] Error getting symbol details", err)
 		return
 	}
 	quoteIncrement, tickSize := int(results[0].Int()), int(results[1].Int())
@@ -83,17 +85,18 @@ func handlerCexApiCalls(ctx context.Context, ticker string, postOrderDetails *Po
 		}
 	}
 
-	log.Printf("[handler.handlerCexApiCalls] Ticker '%s' failed to have a fulfilled order\n", ticker)
+	logger.Warn(location, "Ticker '%s' failed to have a fulfilled order", ticker)
 }
 
 // Level 2
 func handlerCexApiCallsOrderOpenThenCancel(ctx context.Context, ticker string, quoteIncrement, tickSize int) (*gemini.Order, error) {
+	location := "handler.handlerCexApiCallsOrderOpenThenCancel"
 	geminiClient := gemini.GetClient()
 
 	// Get ticker best bid price
 	results, err := gemini.RetryWrapper(ctx, "GetTickerBestBidPrice", geminiClient.GetTickerBestBidPrice, ticker)
 	if err != nil {
-		log.Printf("[handler.handlerCexApiCallsOrderOpenThenCancel] '%s' Error getting best bid price, err: %+v\n", ticker, err)
+		logger.Error(location, "'%s' Error getting best bid price", err, ticker)
 		return nil, err
 	}
 	bestBid := results[0].Float()
@@ -101,7 +104,7 @@ func handlerCexApiCallsOrderOpenThenCancel(ctx context.Context, ticker string, q
 	// Create order
 	results, err = gemini.RetryWrapper(ctx, "CreateOrder", geminiClient.CreateOrder, ticker, bestBid, quoteIncrement, tickSize)
 	if err != nil {
-		log.Printf("[handler.handlerCexApiCallsOrderOpenThenCancel] '%s' Error creating order, err: %+v\n", ticker, err)
+		logger.Error(location, "'%s' Error creating order", err, ticker)
 		return nil, err
 	}
 	order := results[0].Interface().(*gemini.Order)
@@ -109,12 +112,12 @@ func handlerCexApiCallsOrderOpenThenCancel(ctx context.Context, ticker string, q
 	// If order is cancelled, re-create order
 	recreatingOrderCount := 0
 	for order.IsCancelled && recreatingOrderCount < gemini.MaxRetryCount {
-		log.Printf("[handler.handlerCexApiCallsOrderOpenThenCancel] '%s' Order is cancelled, re-creating order\n", ticker)
+		logger.Warn(location, "'%s' Order is cancelled, re-creating order", ticker)
 		recreatingOrderCount++
 
 		results, err = gemini.RetryWrapper(ctx, "CreateOrder", geminiClient.CreateOrder, ticker, bestBid, quoteIncrement, tickSize)
 		if err != nil {
-			log.Printf("[handler.handlerCexApiCallsOrderOpenThenCancel] Error creating order, err: %+v\n", err)
+			logger.Error(location, "Error creating order", err)
 			return nil, err
 		}
 		order = results[0].Interface().(*gemini.Order)
@@ -122,13 +125,14 @@ func handlerCexApiCallsOrderOpenThenCancel(ctx context.Context, ticker string, q
 
 	// If order is somehow still cancelled after retrying - return error
 	if order.IsCancelled {
-		log.Printf("[handler.handlerCexApiCallsOrderOpenThenCancel] '%s' Order is still cancelled after retrying\n", ticker)
-		return nil, errors.New("order is cancelled")
+		err := errors.New("order is cancelled")
+		logger.Error(location, "'%s' Order is still cancelled after retrying", err, ticker)
+		return nil, err
 	}
 
 	// If order fulfilled - return order
 	if !order.IsLive {
-		log.Printf("[handler.handlerCexApiCallsOrderOpenThenCancel] '%s' Order is fulfilled\n", ticker)
+		logger.Info(location, "'%s' Order is fulfilled", ticker)
 		return order, nil
 	}
 
@@ -138,7 +142,7 @@ func handlerCexApiCallsOrderOpenThenCancel(ctx context.Context, ticker string, q
 	for orderOpenQueryStatusWindowCounter < config.OrderOpenQueryStatusWindowCount {
 		orderOpenQueryStatusWindowCounter++
 		if !util.IsTestFlow(ctx) {
-			log.Printf("[handler.handlerCexApiCallsOrderOpenThenCancel] '%s' waiting for 1 min\n", ticker)
+			logger.Info(location, "'%s' waiting for 1 min", ticker)
 			time.Sleep(1 * time.Minute)
 		}
 
@@ -157,12 +161,12 @@ func handlerCexApiCallsOrderOpenThenCancel(ctx context.Context, ticker string, q
 	// Cancel order here, retry creating new order in the next iteration of the loop
 	results, err = gemini.RetryWrapper(ctx, "CancelOrder", geminiClient.CancelOrder, order.OrderID)
 	if err != nil || !results[0].Interface().(*gemini.Order).IsCancelled {
-		log.Printf("[handler.handlerCexApiCallsOrderOpenThenCancel] '%s' Failed to cancel order: %+v\n", ticker, err)
+		logger.Error(location, "'%s' Failed to cancel order: %+v", err, ticker)
 		return nil, err
 	}
 
 	// Order is not filled and successfully cancelled
-	log.Printf("[handler.handlerCexApiCallsOrderOpenThenCancel] '%s' Order is not filled and successfully cancelled\n", ticker)
+	logger.Warn(location, "'%s' Order is not filled and successfully cancelled", ticker)
 	return nil, nil
 }
 
@@ -170,29 +174,30 @@ func handlerCexApiCallsOrderOpenThenCancel(ctx context.Context, ticker string, q
 //
 // bool: order is cancelled
 func handlerCexApiCallsOrderOpenQueryStatus(ctx context.Context, ticker string, order *gemini.Order) (*gemini.Order, bool, error) {
+	location := "handler.handlerCexApiCallsOrderOpenQueryStatus"
 	geminiClient := gemini.GetClient()
 
 	results, err := gemini.RetryWrapper(ctx, "GetOrderStatus", geminiClient.GetOrderStatus, order.OrderID)
 	if err != nil {
-		log.Printf("[handler.handlerCexApiCallsOrderOpenQueryStatus] '%s' Get order status failed, err: %+v\n", ticker, err)
+		logger.Error(location, "'%s' Get order status failed", err, ticker)
 		return nil, false, err
 	}
 	queryOrder := results[0].Interface().(*gemini.Order)
 
 	// If order is cancelled - return empty
 	if queryOrder.IsCancelled {
-		log.Printf("[handler.handlerCexApiCallsOrderOpenQueryStatus] '%s' Order is cancelled\n", ticker)
+		logger.Warn(location, "'%s' Order is cancelled", ticker)
 		return nil, true, nil
 	}
 
 	// If order fulfilled - return order
 	if !queryOrder.IsLive {
-		log.Printf("[handler.handlerCexApiCallsOrderOpenQueryStatus] '%s' Order is fulfilled\n", ticker)
+		logger.Info(location, "'%s' Order is fulfilled", ticker)
 		return queryOrder, false, nil
 	}
 
 	// Order is not fulfilled - to continue querying
-	log.Printf("[handler.handlerCexApiCallsOrderOpenQueryStatus] '%s' Order is not fulfilled yet\n", ticker)
+	logger.Warn(location, "'%s' Order is not fulfilled yet", ticker)
 	return nil, false, nil
 }
 

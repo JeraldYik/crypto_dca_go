@@ -3,15 +3,16 @@ package gemini
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/jeraldyik/crypto_dca_go/cmd/config"
 	"github.com/jeraldyik/crypto_dca_go/cmd/util"
+	"github.com/jeraldyik/crypto_dca_go/internal/logger"
 )
 
 // New Order
 func (api *Api) newOrder(ticker, price, amount string) (*Order, error) {
+	location := "gemini.newOrder"
 	now := config.GetTime().NowTimestamp(nil)
 	quoteCurrency := AppendTickerWithQuoteCurrency(ticker)
 	params := map[string]any{
@@ -25,7 +26,7 @@ func (api *Api) newOrder(ticker, price, amount string) (*Order, error) {
 		"type":            "exchange limit",
 	}
 
-	log.Printf("[gemini.newOrder] params:%+v\n", params)
+	logger.Info(location, "params:%+v", params)
 
 	order := &Order{}
 
@@ -38,20 +39,21 @@ func (api *Api) newOrder(ticker, price, amount string) (*Order, error) {
 		return nil, err
 	}
 
-	log.Printf("[gemini.newOrder] order: %v\n", util.SafeJsonDump(order))
+	logger.Info(location, "order: %v", util.SafeJsonDump(order))
 
 	return order, nil
 }
 
 // Order Status
 func (api *Api) orderStatus(orderID string) (*Order, error) {
+	location := "gemini.orderStatus"
 	params := map[string]any{
 		"request":  OrderStatusURI,
 		"nonce":    config.GetTime().NowTimestamp(nil),
 		"order_id": orderID,
 	}
 
-	log.Printf("[gemini.orderStatus] params:%+v\n", params)
+	logger.Info(location, "params:%+v", params)
 
 	order := &Order{}
 
@@ -64,20 +66,21 @@ func (api *Api) orderStatus(orderID string) (*Order, error) {
 		return nil, err
 	}
 
-	log.Printf("[gemini.orderStatus] order: %v\n", util.SafeJsonDump(order))
+	logger.Info(location, "order: %v", util.SafeJsonDump(order))
 
 	return order, nil
 }
 
 // Cancel Order
 func (api *Api) cancelOrder(orderID string) (*Order, error) {
+	location := "gemini.cancelOrder"
 	params := map[string]any{
 		"request":  CancelOrderURI,
 		"nonce":    config.GetTime().NowTimestamp(nil),
 		"order_id": orderID,
 	}
 
-	log.Printf("[gemini.cancelOrder] params:%+v\n", params)
+	logger.Info(location, "params:%+v", params)
 
 	order := &Order{}
 
@@ -90,7 +93,7 @@ func (api *Api) cancelOrder(orderID string) (*Order, error) {
 		return nil, err
 	}
 
-	log.Printf("[gemini.cancelOrder] order: %v\n", util.SafeJsonDump(order))
+	logger.Info(location, "order: %v", util.SafeJsonDump(order))
 
 	return order, nil
 }

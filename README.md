@@ -1,4 +1,4 @@
-# gemini-dca
+# crypto_dca_go
 
 Personal automation scheduled logic to perform DCA into Gemini CEX
 

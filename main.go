@@ -10,6 +10,7 @@ import (
 	"github.com/jeraldyik/crypto_dca_go/cmd/service/google_sheets"
 	"github.com/jeraldyik/crypto_dca_go/cmd/service/sentry"
 	"github.com/jeraldyik/crypto_dca_go/cmd/util"
+	"github.com/jeraldyik/crypto_dca_go/internal/logger"
 )
 
 func main() {
@@ -17,6 +18,7 @@ func main() {
 	ctx := context.Background()
 
 	// setup
+	logger.Init()
 	config.MustInit()
 	gemini.MustInitClient()
 	google_sheets.MustInit(ctx)

@@ -2,7 +2,8 @@ package config
 
 import (
 	"encoding/json"
-	"log"
+	"errors"
+	"fmt"
 	"math"
 	"os"
 	"reflect"
@@ -10,12 +11,15 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jeraldyik/crypto_dca_go/internal/logger"
 	"google.golang.org/api/sheets/v4"
 )
 
 func mustBeDefined(key envKey, val string, ok bool) {
+	location := "config.mustBeDefined"
 	if !ok || val == "" {
-		log.Panicf("[config.mustBeDefined] Missing environment variable '%s'\n", key)
+		errStr := fmt.Sprintf("Missing environment variable '%s'", key)
+		logger.Panic(location, errStr, errors.New(errStr))
 	}
 }
 
@@ -35,11 +39,13 @@ func mustTransformArrayStringToArray(arrayString string) []string {
 }
 
 func mustTransformSliceToMap[T string](key envKey, s []T) map[T]bool {
+	location := "config.mustTransformSliceToMap"
 	m := make(map[T]bool)
 	for _, v := range s {
 		reflectValue := reflect.ValueOf(v)
 		if reflect.DeepEqual(reflectValue, reflect.Zero(reflectValue.Type()).Interface()) {
-			log.Panicf("[config.mustTransformSliceToMap] There exist a zero type in slice %+v for key '%s'\n", s, key)
+			errStr := fmt.Sprintf("There exist a zero type in slice %+v for key '%s'", s, key)
+			logger.Panic(location, errStr, errors.New(errStr))
 		}
 		m[v] = true
 	}
@@ -47,9 +53,11 @@ func mustTransformSliceToMap[T string](key envKey, s []T) map[T]bool {
 }
 
 func mustTransformJsonStringToMappedCryptoTickers[T float64 | int | string](key envKey, config *Config, s string) map[string]T {
+	location := "config.mustTransformJsonStringToMappedCryptoTickers"
 	m := make(map[string]T)
 	if err := json.Unmarshal([]byte(s), &m); err != nil {
-		log.Panicf("[config.mustTransformJsonStringToMappedCryptoTickers] Unable to unmarshal '%s'\n", s)
+		errStr := fmt.Sprintf("Unable to unmarshal '%s'", key)
+		logger.Panic(location, errStr, errors.New(errStr))
 	}
 	mustCheckIfCryptoTickerExist(key, config, m)
 
@@ -57,43 +65,52 @@ func mustTransformJsonStringToMappedCryptoTickers[T float64 | int | string](key 
 }
 
 func mustCheckIfCryptoTickerExist[T float64 | int | string](key envKey, config *Config, m map[string]T) {
+	location := "config.mustCheckIfCryptoTickerExist"
 	for cryptoTicker := range m {
 		if _, ok := config.CryptoTickers[cryptoTicker]; !ok {
-			log.Panicf("[config.mustCheckIfCryptoTickerExist] Crypto Ticker '%s' does not exist for key '%s'\n", cryptoTicker, key)
+			errStr := fmt.Sprintf("Crypto Ticker '%s' does not exist for key '%s'", cryptoTicker, key)
+			logger.Panic(location, errStr, errors.New(errStr))
 		}
 	}
 }
 
 // TODO: refactor this
 func mustParseStrToType[T float64](key envKey, s string, t reflect.Kind) T {
+	location := "config.mustParseStrToType"
 	switch t {
 	case reflect.Float64:
 		f, err := strconv.ParseFloat(s, 64)
 		if err != nil {
-			log.Panicf("[config.mustParseStrToType] Unable to parse key '%s', value: '%s' of type '%s'\n", key, s, t)
+			errStr := fmt.Sprintf("Unable to parse key '%s', value: '%s' of type '%s'", key, s, t)
+			logger.Panic(location, errStr, errors.New(errStr))
 		}
 		return T(f)
 	default:
-		log.Panicf("[config.mustParseStrToType] Type is not allowed '%s' for key '%s'\n", t, key)
+		errStr := fmt.Sprintf("Type '%s' is not allowed for key '%s'", t, key)
+		logger.Panic(location, errStr, errors.New(errStr))
 	}
 	return 0
 }
 
 // Date in format of YYYY/MM/DD
 func mustGetDifferenceInDaysFromStartDate(config *Config) int {
+	location := "config.mustGetDifferenceInDaysFromStartDate"
 	now := GetTime().now
 	startDate := mustParseStrToTime(startDate_EnvKey, config.GoogleSheet.startDate)
 	if startDate.After(now) {
-		log.Panicf("[config.mustGetDifferenceInDaysFromStartDate] Start date of recording is later than today\n")
+		errStr := "Start date of recording is later than today"
+		logger.Panic(location, errStr, errors.New(errStr))
 	}
 	duration := now.Sub(startDate)
 	return int(math.Floor(duration.Hours() / 24))
 }
 
 func mustParseStrToTime(key envKey, s string) time.Time {
+	location := "config.mustParseStrToTime"
 	t, err := time.Parse("02/01/2006", s)
 	if err != nil {
-		log.Panicf("[config.mustParseStrToTime] Unable to parse time string '%s' for key '%s'\n", s, key)
+		errStr := fmt.Sprintf("Unable to parse date string '%s' for key '%s'", s, key)
+		logger.Panic(location, errStr, errors.New(errStr))
 	}
 	return t
 }
@@ -107,10 +124,12 @@ func formRowRanges(c *GoogleSheet) map[string]int {
 }
 
 func mustParseColStringToInt(col string) int64 {
+	location := "config.mustParseColStringToInt"
 	idx := int64(0)
 	for _, c := range col {
 		if c < 'A' || c > 'Z' {
-			log.Panicf("[config.mustParseColStringToInt] Col '%s' is of invalid format\n", col)
+			errStr := fmt.Sprintf("Col '%s' is of invalid format", col)
+			logger.Panic(location, errStr, errors.New(errStr))
 		}
 		idx = idx*26 + int64(c-'A') + 1
 	}

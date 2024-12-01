@@ -1,18 +1,19 @@
 package sentry
 
 import (
-	"log"
 	"time"
 
 	sentry "github.com/getsentry/sentry-go"
 	"github.com/jeraldyik/crypto_dca_go/cmd/config"
+	"github.com/jeraldyik/crypto_dca_go/internal/logger"
 )
 
 func MustInit() {
+	location := "sentry.MustInit"
 	if err := sentry.Init(sentry.ClientOptions{
 		Dsn: config.Get().Sentry.Dsn,
 	}); err != nil {
-		log.Panicf("[sentry.MustInit] Failed to initialize sentry, err: %+v\n", err)
+		logger.Panic(location, "Failed to initialize sentry, err: %+v", err)
 	}
 }
 

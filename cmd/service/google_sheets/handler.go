@@ -2,17 +2,18 @@ package google_sheets
 
 import (
 	"errors"
-	"log"
 
 	"github.com/jeraldyik/crypto_dca_go/cmd/config"
+	"github.com/jeraldyik/crypto_dca_go/internal/logger"
 	"google.golang.org/api/sheets/v4"
 )
 
 func (gs *GoogleSheets) GetSheetID() (int64, error) {
+	location := "google_sheets.GetSheetID"
 	config := config.Get().GoogleSheet
 	spreadsheet, err := gs.sheets.Spreadsheets.Get(config.SheetID).Do()
 	if err != nil {
-		log.Printf("[google_sheets.GetSheetID] Unable to fetch spreadsheet details, err: %+v\n", err)
+		logger.Error(location, "Unable to fetch spreadsheet details", err)
 		return 0, err
 	}
 	for _, sheet := range spreadsheet.Sheets {

@@ -3,12 +3,12 @@ package gemini
 import (
 	"context"
 	"fmt"
-	"log"
 	"reflect"
 	"strings"
 	"time"
 
 	"github.com/jeraldyik/crypto_dca_go/cmd/util"
+	"github.com/jeraldyik/crypto_dca_go/internal/logger"
 )
 
 // Expect all functions to have error as last return value
@@ -39,20 +39,21 @@ func RetryWrapper(ctx context.Context, fnName string, fn any, args ...any) ([]re
 		}
 		err, ok = errorResult.Interface().(error)
 		if !ok {
-			log.Printf("[%s] last return type is not error, is %v instead\n", fnName, errorResult.Type().String())
-			return nil, fmt.Errorf("invalid_return_type")
+			err := fmt.Errorf("invalid_return_type")
+			logger.Error(fnName, "Last return type is not error, is %v instead", err, errorResult.Type().String())
+			return nil, err
 		}
 		if err == nil {
 			return results[:len(results)-1], nil
 		}
 
-		log.Printf("[%s] has some error, retrying in 5 seconds, err: %+v\n", fnName, err)
+		logger.Error(fnName, "Has some error, retrying in 5 seconds", err)
 		if !util.IsTestFlow(ctx) {
 			time.Sleep(5 * time.Second)
 		}
 	}
 
-	log.Printf("[%s] retried %v times, returning error\n", fnName, MaxRetryCount)
+	logger.Error(fnName, "Retried %v times, returning error\n", err, MaxRetryCount)
 	return nil, err
 }
 

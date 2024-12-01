@@ -1,12 +1,11 @@
 package cmd
 
 import (
-	"log"
-
 	"github.com/emirpasic/gods/maps/treemap"
 	"github.com/jeraldyik/crypto_dca_go/cmd/config"
 	"github.com/jeraldyik/crypto_dca_go/cmd/service/google_sheets"
 	"github.com/jeraldyik/crypto_dca_go/cmd/util"
+	"github.com/jeraldyik/crypto_dca_go/internal/logger"
 	"google.golang.org/api/sheets/v4"
 )
 
@@ -46,15 +45,16 @@ func formBatchUpdateRequest(sheetID int64, postOrders *treemap.Map) *sheets.Batc
 }
 
 func batchUpdate(postOrders *treemap.Map) error {
+	location := "cmd.batchUpdate"
 	sheetID, err := google_sheets.Get().GetSheetID()
 	if err != nil {
-		log.Printf("[cmd.batchUpdate] Getting google sheets sheet ID err: %+v\n", err)
+		logger.Error(location, "Getting google sheets sheet ID", err)
 		return err
 	}
 	googleSheetsReq := formBatchUpdateRequest(sheetID, postOrders)
 	err = google_sheets.Get().BatchUpdate(googleSheetsReq)
 	if err != nil {
-		log.Printf("[cmd.batchUpdate] Batch updating google sheets err: %+v\n", err)
+		logger.Error(location, "Batch updating google sheets", err)
 		return err
 	}
 

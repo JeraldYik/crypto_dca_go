@@ -3,16 +3,18 @@ package gemini
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
+
+	"github.com/jeraldyik/crypto_dca_go/internal/logger"
 )
 
 // Ticker Details
 func (api *Api) tickerDetails(ticker string) (TickerDetails, error) {
+	location := "gemini.tickerDetails"
 	quoteCurrency := AppendTickerWithQuoteCurrency(ticker)
 	path := fmt.Sprintf(TickerDetailsURI, quoteCurrency)
 
-	log.Printf("[gemini.tickerDetails] path:%s\n", path)
+	logger.Info(location, "path:%s", path)
 
 	var tickerDetails TickerDetails
 
@@ -25,17 +27,18 @@ func (api *Api) tickerDetails(ticker string) (TickerDetails, error) {
 		return tickerDetails, err
 	}
 
-	log.Printf("[gemini.tickerDetails] tickerDetails: %+v\n", tickerDetails)
+	logger.Info(location, "tickerDetails: %+v", tickerDetails)
 
 	return tickerDetails, nil
 }
 
 // TickerV2
 func (api *Api) tickerV2(ticker string) (TickerV2, error) {
+	location := "gemini.tickerV2"
 	quoteCurrency := AppendTickerWithQuoteCurrency(ticker)
 	path := fmt.Sprintf(TickerV2URI, quoteCurrency)
 
-	log.Printf("[gemini.tickerV2] path:%s\n", path)
+	logger.Info(location, "path:%s", path)
 
 	var tickerV2 TickerV2
 
@@ -48,7 +51,7 @@ func (api *Api) tickerV2(ticker string) (TickerV2, error) {
 		return tickerV2, err
 	}
 
-	log.Printf("[gemini.tickerV2] tickerV2: %+v\n", tickerV2)
+	logger.Info(location, "tickerV2: %+v", tickerV2)
 
 	return tickerV2, nil
 }

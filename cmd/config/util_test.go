@@ -14,8 +14,8 @@ import (
 
 func Test_mustBeDefined(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
-		mustBeDefined("key", "val", true)
 		defer util.RecoverAndGraceFullyExitTestHelper(t, "")
+		mustBeDefined("key", "val", true)
 	})
 
 	t.Run("panic", func(t *testing.T) {

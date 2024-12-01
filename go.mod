@@ -8,6 +8,7 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/jarcoal/httpmock v1.3.1
 	github.com/shopspring/decimal v1.4.0
+	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/oauth2 v0.24.0
 	google.golang.org/api v0.176.1

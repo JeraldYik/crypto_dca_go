@@ -3,6 +3,7 @@ package config
 import (
 	"time"
 
+	"github.com/jeraldyik/crypto_dca_go/internal/logger"
 	"google.golang.org/api/sheets/v4"
 )
 
@@ -16,6 +17,7 @@ var TestNowDate = time.Date(2024, time.November, 3, 0, 0, 0, 0, time.UTC)
 var TestNowDateStr = "03/11/2024"
 
 func TestInit(u *ConfigUpdateable, now *time.Time) {
+	logger.Init()
 	config = &Config{
 		IsSandboxEnv: true,
 		CryptoTickers: map[string]bool{

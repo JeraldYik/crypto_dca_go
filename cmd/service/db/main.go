@@ -2,9 +2,9 @@ package db
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/jeraldyik/crypto_dca_go/cmd/config"
+	"github.com/jeraldyik/crypto_dca_go/internal/logger"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -26,21 +26,23 @@ func (o *OrderDB) GetDB() *gorm.DB {
 }
 
 func MustInit() {
+	location := "db.MustInit"
 	c := config.Get().Db
 	conn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=5432 sslmode=disable", c.Host, c.Username, c.Password, c.Name)
 
 	db, err := gorm.Open(postgres.Open(conn), &gorm.Config{})
 	if err != nil {
-		log.Panicf("[db.MustInit] Failed to initialise database, err\n: %+v", err)
+		logger.Panic(location, "Failed to initialise database, err: %+v", err)
 	}
 
 	Set(&OrderDB{db: db})
 }
 
 func Close() error {
+	location := "db.Close"
 	sqlDB, err := orderDB.GetDB().DB()
 	if err != nil {
-		log.Printf("[db.Close] Error in getting underlying db, err: %+v\n", err)
+		logger.Error(location, "Error in getting underlying db", err)
 		return err
 	}
 	sqlDB.Close()

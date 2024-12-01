@@ -2,19 +2,22 @@ package db
 
 import (
 	"errors"
-	"log"
+
+	"github.com/jeraldyik/crypto_dca_go/internal/logger"
 )
 
 func (o *OrderDB) BulkInsert(rows []*Order) error {
+	location := "db.BulkInsert"
 	result := o.db.Create(rows)
 	if result.Error != nil {
-		log.Printf("[db.BulkInsert] Failed to insert rows, err: %+v\n", result.Error)
+		logger.Error(location, "Failed to insert rows", result.Error)
 		return result.Error
 	} else if result.RowsAffected != int64(len(rows)) {
-		log.Printf("[db.BulkInsert] Failed to insert correct number of rows. got = %v, expected = %v\n", result.RowsAffected, len(rows))
-		return errors.New("db_insert_mismatched_rows_count")
+		err := errors.New("db_insert_mismatched_rows_count")
+		logger.Error(location, "Failed to insert correct number of rows. got = %v, expected = %v", err, result.RowsAffected, len(rows))
+		return err
 	}
 
-	log.Printf("[db.BulkInsert] Successfully inserted %v rows\n", len(rows))
+	logger.Info(location, "Successfully inserted %v rows", len(rows))
 	return nil
 }

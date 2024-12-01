@@ -9,10 +9,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 
-	"github.com/jeraldyik/crypto_dca_go/cmd/util"
+	"github.com/jeraldyik/crypto_dca_go/internal/logger"
 )
 
 type Api struct {
@@ -59,6 +58,7 @@ func (api *Api) buildHeader(req map[string]any) http.Header {
 
 // request makes the HTTP request to Gemini and handles any returned errors
 func (api *Api) request(verb, path string, params map[string]any) ([]byte, error) {
+	location := "gemini.request"
 	url := api.url + path
 
 	req, err := http.NewRequest(verb, url, bytes.NewBuffer([]byte{}))
@@ -78,7 +78,7 @@ func (api *Api) request(verb, path string, params map[string]any) ([]byte, error
 		}
 	}
 
-	log.Printf("[gemini.request] request verb:%s, url:%s, params:%+v\n", verb, url, params)
+	logger.Info(location, "request verb:%s, url:%s, params:%+v", verb, url, params)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -86,8 +86,6 @@ func (api *Api) request(verb, path string, params map[string]any) ([]byte, error
 		return nil, err
 	}
 	defer resp.Body.Close()
-
-	log.Printf("[gemini.request] response: %v\n", util.SafeJsonDump(resp))
 
 	if resp.StatusCode != 200 {
 		statusCode := fmt.Sprintf("HTTP Status Code: %d", resp.StatusCode)
@@ -118,7 +116,7 @@ func (api *Api) request(verb, path string, params map[string]any) ([]byte, error
 		return nil, err
 	}
 
-	log.Printf("[gemini.request] response.body: %v\n", string(body))
+	logger.Info(location, "response.body: %v", string(body))
 
 	return body, nil
 }

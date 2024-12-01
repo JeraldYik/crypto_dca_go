@@ -1,5 +1,5 @@
 run: # binary in heroku dyno
-	./bin/crypto_dca_go
+	bin/crypto_dca_go
 
 dev:
 	source conf/dev.env && go run main.go
