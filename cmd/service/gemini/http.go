@@ -90,23 +90,23 @@ func (api *Api) request(verb, path string, params map[string]any) ([]byte, error
 	if resp.StatusCode != 200 {
 		statusCode := fmt.Sprintf("HTTP Status Code: %d", resp.StatusCode)
 		if resp.StatusCode >= 300 && resp.StatusCode < 400 {
-			return nil, fmt.Errorf("%s\n%s", statusCode, "API entry point has moved, see Location: header. Most likely an http: to https: redirect.")
+			return nil, fmt.Errorf("%s --- %s", statusCode, "API entry point has moved, see Location: header. Most likely an http: to https: redirect.")
 		} else if resp.StatusCode == 400 {
-			return nil, fmt.Errorf("%s\n%s", statusCode, "Auction not open or paused, ineligible timing, market not open, or the request was malformed; in the case of a private API request, missing or malformed Gemini private API authentication headers")
+			return nil, fmt.Errorf("%s --- %s", statusCode, "Auction not open or paused, ineligible timing, market not open, or the request was malformed; in the case of a private API request, missing or malformed Gemini private API authentication headers")
 		} else if resp.StatusCode == 403 {
-			return nil, fmt.Errorf("%s\n%s", statusCode, "The API key is missing the role necessary to access this private API endpoint")
+			return nil, fmt.Errorf("%s --- %s", statusCode, "The API key is missing the role necessary to access this private API endpoint")
 		} else if resp.StatusCode == 404 {
-			return nil, fmt.Errorf("%s\n%s", statusCode, "Unknown API entry point or Order not found")
+			return nil, fmt.Errorf("%s --- %s", statusCode, "Unknown API entry point or Order not found")
 		} else if resp.StatusCode == 406 {
-			return nil, fmt.Errorf("%s\n%s", statusCode, "Insufficient Funds")
+			return nil, fmt.Errorf("%s --- %s", statusCode, "Insufficient Funds")
 		} else if resp.StatusCode == 429 {
-			return nil, fmt.Errorf("%s\n%s", statusCode, "Rate Limiting was applied")
+			return nil, fmt.Errorf("%s --- %s", statusCode, "Rate Limiting was applied")
 		} else if resp.StatusCode == 500 {
-			return nil, fmt.Errorf("%s\n%s", statusCode, "The server encountered an error")
+			return nil, fmt.Errorf("%s --- %s", statusCode, "The server encountered an error")
 		} else if resp.StatusCode == 502 {
-			return nil, fmt.Errorf("%s\n%s", statusCode, "Technical issues are preventing the request from being satisfied")
+			return nil, fmt.Errorf("%s --- %s", statusCode, "Technical issues are preventing the request from being satisfied")
 		} else if resp.StatusCode == 503 {
-			return nil, fmt.Errorf("%s\n%s", statusCode, "The exchange is down for maintenance")
+			return nil, fmt.Errorf("%s --- %s", statusCode, "The exchange is down for maintenance")
 		}
 	}
 

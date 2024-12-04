@@ -8,7 +8,7 @@ test:
 	go test -count=1 ./...
 
 prod_logs:
-	heroku logs --remote production
+	heroku logs -a gemini-dca-production
 
 ssh_staging:
 	heroku run bash -a gemini-dca-staging

@@ -210,6 +210,107 @@ func TestApi_CreateOrder(t *testing.T) {
 	}
 }
 
+func TestApi_MatchActiveOrders(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+	config.TestInit(nil, nil)
+
+	type args struct {
+		ticker string
+	}
+	tests := []struct {
+		name    string
+		setup   func() func()
+		args    args
+		want    *Order
+		wantErr bool
+	}{
+		{
+			name: "ok",
+			setup: func() func() {
+				responder := httpmock.NewStringResponder(http.StatusOK, `[
+					{
+							"order_id": "106817811", 
+							"avg_execution_price": "3632.8508430064554",
+							"is_live": false, 
+							"is_cancelled": false, 
+							"executed_amount": "3.7567928949",
+							"client_order_id": "20190110-4738721",
+							"symbol": "btcsgd"
+					},
+					{
+							"order_id": "106817812", 
+							"avg_execution_price": "3632.8508430064554",
+							"is_live": false, 
+							"is_cancelled": false, 
+							"executed_amount": "3.7567928949",
+							"client_order_id": "20190110-4738722",
+							"symbol": "ethsgd"
+					}
+				]`)
+				httpmock.RegisterResponder(http.MethodPost, ActiveOrdersURI, responder)
+				return func() {
+					httpmock.Reset()
+				}
+			},
+			args: args{
+				ticker: "BTC",
+			},
+			want: &Order{
+				OrderID:           "106817811",
+				AvgExecutionPrice: 3632.8508430064554,
+				IsLive:            false,
+				IsCancelled:       false,
+				ExecutedAmount:    3.7567928949,
+				ClientOrderID:     "20190110-4738721",
+				Symbol:            "btcsgd",
+			},
+			wantErr: false,
+		},
+		{
+			name: "no_match",
+			setup: func() func() {
+				responder := httpmock.NewStringResponder(http.StatusOK, `[
+					{
+							"order_id": "106817811", 
+							"avg_execution_price": "3632.8508430064554",
+							"is_live": false, 
+							"is_cancelled": false, 
+							"executed_amount": "3.7567928949",
+							"client_order_id": "20190110-4738721",
+							"symbol": "ethsgd"
+					}
+				]`)
+				httpmock.RegisterResponder(http.MethodPost, ActiveOrdersURI, responder)
+				return func() {
+					httpmock.Reset()
+				}
+			},
+			args: args{
+				ticker: "BTC",
+			},
+			want:    nil,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			api := &Api{
+				url: "",
+			}
+			teardown := tt.setup()
+			got, err := api.MatchActiveOrders(tt.args.ticker)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+			assert.Equal(t, tt.want, got)
+			teardown()
+		})
+	}
+}
+
 func TestApi_GetOrderStatus(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()

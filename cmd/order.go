@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"errors"
+	"fmt"
 	"sync"
 	"time"
 
@@ -64,7 +65,7 @@ func handlerCexApiCalls(ctx context.Context, ticker string, postOrderDetails *Po
 	geminiClient := gemini.GetClient()
 
 	// Get Symbol details
-	results, err := gemini.RetryWrapper(ctx, "GetQuoteIncrementAndTickSize", geminiClient.GetQuoteIncrementAndTickSize, ticker)
+	results, err := gemini.RetryWrapper(ctx, fmt.Sprintf("GetQuoteIncrementAndTickSize - %v", ticker), geminiClient.GetQuoteIncrementAndTickSize, ticker)
 	if err != nil {
 		logger.Error(location, "[handler.handlerCexApiCalls] Error getting symbol details", err)
 		return
@@ -94,7 +95,7 @@ func handlerCexApiCallsOrderOpenThenCancel(ctx context.Context, ticker string, q
 	geminiClient := gemini.GetClient()
 
 	// Get ticker best bid price
-	results, err := gemini.RetryWrapper(ctx, "GetTickerBestBidPrice", geminiClient.GetTickerBestBidPrice, ticker)
+	results, err := gemini.RetryWrapper(ctx, fmt.Sprintf("GetTickerBestBidPrice - %v", ticker), geminiClient.GetTickerBestBidPrice, ticker)
 	if err != nil {
 		logger.Error(location, "'%s' Error getting best bid price", err, ticker)
 		return nil, err
@@ -102,10 +103,15 @@ func handlerCexApiCallsOrderOpenThenCancel(ctx context.Context, ticker string, q
 	bestBid := results[0].Float()
 
 	// Create order
-	results, err = gemini.RetryWrapper(ctx, "CreateOrder", geminiClient.CreateOrder, ticker, bestBid, quoteIncrement, tickSize)
+	results, err = gemini.RetryWrapper(ctx, fmt.Sprintf("CreateOrder - %v", ticker), geminiClient.CreateOrder, ticker, bestBid, quoteIncrement, tickSize)
 	if err != nil {
 		logger.Error(location, "'%s' Error creating order", err, ticker)
-		return nil, err
+		// Search order in case of order already exists
+		results, err = gemini.RetryWrapper(ctx, fmt.Sprintf("MatchActiveOrders - %v, ticker), geminiClient.MatchActiveOrders", ticker), geminiClient.MatchActiveOrders, ticker)
+		if err != nil {
+			logger.Error(location, "'%s' Error getting and matching active orders", err, ticker)
+			return nil, err
+		}
 	}
 	order := results[0].Interface().(*gemini.Order)
 
@@ -115,10 +121,15 @@ func handlerCexApiCallsOrderOpenThenCancel(ctx context.Context, ticker string, q
 		logger.Warn(location, "'%s' Order is cancelled, re-creating order", ticker)
 		recreatingOrderCount++
 
-		results, err = gemini.RetryWrapper(ctx, "CreateOrder", geminiClient.CreateOrder, ticker, bestBid, quoteIncrement, tickSize)
+		results, err = gemini.RetryWrapper(ctx, fmt.Sprintf("CreateOrder - %v", ticker), geminiClient.CreateOrder, ticker, bestBid, quoteIncrement, tickSize)
 		if err != nil {
 			logger.Error(location, "Error creating order", err)
-			return nil, err
+			// Search order in case of order already exists
+			results, err = gemini.RetryWrapper(ctx, fmt.Sprintf("MatchActiveOrders - %v, ticker), geminiClient.MatchActiveOrders", ticker), geminiClient.MatchActiveOrders, ticker)
+			if err != nil {
+				logger.Error(location, "'%s' Error getting and matching active orders", err, ticker)
+				return nil, err
+			}
 		}
 		order = results[0].Interface().(*gemini.Order)
 	}
@@ -159,7 +170,7 @@ func handlerCexApiCallsOrderOpenThenCancel(ctx context.Context, ticker string, q
 	}
 
 	// Cancel order here, retry creating new order in the next iteration of the loop
-	results, err = gemini.RetryWrapper(ctx, "CancelOrder", geminiClient.CancelOrder, order.OrderID)
+	results, err = gemini.RetryWrapper(ctx, fmt.Sprintf("CancelOrder - %v", ticker), geminiClient.CancelOrder, order.OrderID)
 	if err != nil || !results[0].Interface().(*gemini.Order).IsCancelled {
 		logger.Error(location, "'%s' Failed to cancel order: %+v", err, ticker)
 		return nil, err
@@ -177,7 +188,7 @@ func handlerCexApiCallsOrderOpenQueryStatus(ctx context.Context, ticker string, 
 	location := "handler.handlerCexApiCallsOrderOpenQueryStatus"
 	geminiClient := gemini.GetClient()
 
-	results, err := gemini.RetryWrapper(ctx, "GetOrderStatus", geminiClient.GetOrderStatus, order.OrderID)
+	results, err := gemini.RetryWrapper(ctx, fmt.Sprintf("GetOrderStatus - %v", ticker), geminiClient.GetOrderStatus, order.OrderID)
 	if err != nil {
 		logger.Error(location, "'%s' Get order status failed", err, ticker)
 		return nil, false, err

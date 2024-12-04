@@ -9,9 +9,10 @@ const (
 	TickerV2URI      = "/v2/ticker/%s"
 
 	// authenticated
-	NewOrderURI    = "/v1/order/new"
-	OrderStatusURI = "/v1/order/status"
-	CancelOrderURI = "/v1/order/cancel"
+	NewOrderURI     = "/v1/order/new"
+	ActiveOrdersURI = "/v1/orders"
+	OrderStatusURI  = "/v1/order/status"
+	CancelOrderURI  = "/v1/order/cancel"
 )
 
 const (

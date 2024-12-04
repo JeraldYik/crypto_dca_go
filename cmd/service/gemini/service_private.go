@@ -13,7 +13,7 @@ import (
 // New Order
 func (api *Api) newOrder(ticker, price, amount string) (*Order, error) {
 	location := "gemini.newOrder"
-	now := config.GetTime().NowTimestamp(nil)
+	now := config.GetTime().NowTimestamp()
 	quoteCurrency := AppendTickerWithQuoteCurrency(ticker)
 	params := map[string]any{
 		"request":         NewOrderURI,
@@ -44,12 +44,37 @@ func (api *Api) newOrder(ticker, price, amount string) (*Order, error) {
 	return order, nil
 }
 
+// Get Active orders
+func (api *Api) getActiveOrders() ([]*Order, error) {
+	location := "gemini.getActiveOrders"
+	now := config.GetTime().NowTimestamp()
+	params := map[string]any{
+		"request": ActiveOrdersURI,
+		"nonce":   now,
+	}
+
+	var orders []*Order
+
+	body, err := api.request(http.MethodPost, ActiveOrdersURI, params)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal(body, &orders); err != nil {
+		return nil, err
+	}
+
+	logger.Info(location, "orders: %+v", orders)
+
+	return orders, nil
+}
+
 // Order Status
 func (api *Api) orderStatus(orderID string) (*Order, error) {
 	location := "gemini.orderStatus"
 	params := map[string]any{
 		"request":  OrderStatusURI,
-		"nonce":    config.GetTime().NowTimestamp(nil),
+		"nonce":    config.GetTime().NowTimestamp(),
 		"order_id": orderID,
 	}
 
@@ -76,7 +101,7 @@ func (api *Api) cancelOrder(orderID string) (*Order, error) {
 	location := "gemini.cancelOrder"
 	params := map[string]any{
 		"request":  CancelOrderURI,
-		"nonce":    config.GetTime().NowTimestamp(nil),
+		"nonce":    config.GetTime().NowTimestamp(),
 		"order_id": orderID,
 	}
 

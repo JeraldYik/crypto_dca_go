@@ -22,9 +22,9 @@ func GetTime() *Time {
 	return &t
 }
 
-func (t Time) NowTimestamp(now *time.Time) int64 {
-	timeInit(now)
-	return t.now.UnixNano()
+// Keeps changing, to satisfy uniqueness in gemini http requests
+func (t Time) NowTimestamp() int64 {
+	return time.Now().UnixNano()
 }
 
 func (t Time) GetTodayDate() time.Time {

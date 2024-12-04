@@ -7,8 +7,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jeraldyik/crypto_dca_go/cmd/config"
 	"github.com/jeraldyik/crypto_dca_go/cmd/util"
 	"github.com/jeraldyik/crypto_dca_go/internal/logger"
+	"github.com/shopspring/decimal"
 )
 
 // Expect all functions to have error as last return value
@@ -55,6 +57,17 @@ func RetryWrapper(ctx context.Context, fnName string, fn any, args ...any) ([]re
 
 	logger.Error(fnName, "Retried %v times, returning error\n", err, MaxRetryCount)
 	return nil, err
+}
+
+// return orderPriceStr, orderAmountStr
+func formCreateOrderReq(ticker string, bestBid float64, quoteIncrement, tickSize int) (string, string) {
+	orderMetadata := config.Get().OrderMetadata
+	orderPrice := bestBid * orderMetadata.OrderPriceToBidPriceRatio
+	orderAmount := decimal.NewFromFloat(orderMetadata.DailyFiatAmount[ticker]).Div(decimal.NewFromFloat(orderPrice))
+	orderPriceStr := util.ConvertFloatToPrecString(orderPrice, quoteIncrement)
+	orderAmountStr := util.ConvertFloatToPrecString(orderAmount, tickSize)
+
+	return orderPriceStr, orderAmountStr
 }
 
 // To hardcode this, since metadata does not change
