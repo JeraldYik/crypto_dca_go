@@ -102,8 +102,9 @@ func handlerCexApiCallsOrderOpenThenCancel(ctx context.Context, ticker string, q
 	}
 	bestBid := results[0].Float()
 
-	// Create order
-	results, err = gemini.RetryWrapper(ctx, fmt.Sprintf("CreateOrder - %v", ticker), geminiClient.CreateOrder, ticker, bestBid, quoteIncrement, tickSize)
+	// TODO: to monitor on situation on http error and no order created
+	// Create order - not retrying to prevent side effects
+	order, err := geminiClient.CreateOrder(ticker, bestBid, quoteIncrement, tickSize)
 	if err != nil {
 		logger.Error(location, "'%s' Error creating order", err, ticker)
 		// Search order in case of order already exists
@@ -112,16 +113,16 @@ func handlerCexApiCallsOrderOpenThenCancel(ctx context.Context, ticker string, q
 			logger.Error(location, "'%s' Error getting and matching active orders", err, ticker)
 			return nil, err
 		}
+		order = results[0].Interface().(*gemini.Order)
 	}
-	order := results[0].Interface().(*gemini.Order)
 
-	// If order is cancelled, re-create order
+	// If order is cancelled, re-create order - not retrying to prevent side effects
 	recreatingOrderCount := 0
 	for order.IsCancelled && recreatingOrderCount < gemini.MaxRetryCount {
 		logger.Warn(location, "'%s' Order is cancelled, re-creating order", ticker)
 		recreatingOrderCount++
 
-		results, err = gemini.RetryWrapper(ctx, fmt.Sprintf("CreateOrder - %v", ticker), geminiClient.CreateOrder, ticker, bestBid, quoteIncrement, tickSize)
+		order, err = geminiClient.CreateOrder(ticker, bestBid, quoteIncrement, tickSize)
 		if err != nil {
 			logger.Error(location, "Error creating order", err)
 			// Search order in case of order already exists
@@ -130,8 +131,8 @@ func handlerCexApiCallsOrderOpenThenCancel(ctx context.Context, ticker string, q
 				logger.Error(location, "'%s' Error getting and matching active orders", err, ticker)
 				return nil, err
 			}
+			order = results[0].Interface().(*gemini.Order)
 		}
-		order = results[0].Interface().(*gemini.Order)
 	}
 
 	// If order is somehow still cancelled after retrying - return error
