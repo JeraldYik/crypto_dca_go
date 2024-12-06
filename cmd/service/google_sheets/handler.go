@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/jeraldyik/crypto_dca_go/cmd/config"
+	"github.com/jeraldyik/crypto_dca_go/cmd/util"
 	"github.com/jeraldyik/crypto_dca_go/internal/logger"
 	"google.golang.org/api/sheets/v4"
 )
@@ -25,7 +26,9 @@ func (gs *GoogleSheets) GetSheetID() (int64, error) {
 }
 
 func (gs *GoogleSheets) BatchUpdate(req *sheets.BatchUpdateSpreadsheetRequest) error {
+	location := "google_sheets.BatchUpdate"
 	config := config.Get().GoogleSheet
-	_, err := gs.sheets.Spreadsheets.BatchUpdate(config.SheetID, req).Do()
+	resp, err := gs.sheets.Spreadsheets.BatchUpdate(config.SheetID, req).Do()
+	logger.Info(location, "resp: %v", util.SafeJsonDump(resp))
 	return err
 }
