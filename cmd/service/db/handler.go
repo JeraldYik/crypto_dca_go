@@ -21,7 +21,7 @@ func (o *OrderDB) BulkInsert(rows []*Order) error {
 	*/
 	_, num_rows, err := o.db.From("Orders").Insert(rows, false, "", "minimal", "exact").Execute()
 	if err != nil {
-		logger.Error(location, "Failed to insert rows: %+v", err)
+		logger.Error(location, "Failed to insert rows: %v", err)
 		return err
 	} else if num_rows != int64(len(rows)) {
 		err := errors.New("db_insert_mismatched_rows_count")
