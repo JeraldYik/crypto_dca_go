@@ -37,9 +37,25 @@ func Test_mustRetrieveConfigFromEnv(t *testing.T) {
 
 	t.Run("panic", func(t *testing.T) {
 		defer util.RecoverAndGraceFullyExitTestHelper(t, "Missing environment variable 'TEST_ENV_KEY'")
-		defer os.Setenv(testEnvKey, "")
+		defer os.Clearenv()
 		mustRetrieveConfigFromEnv(envKey(testEnvKey))
 		os.Clearenv()
+	})
+}
+
+func Test_retrieveConfigFromEnv(t *testing.T) {
+	testEnvKey := "TEST_ENV_KEY"
+	testEnvValue := "TEST_ENV_VALUE"
+	t.Run("ok", func(t *testing.T) {
+		defer os.Clearenv()
+		os.Setenv(testEnvKey, testEnvValue)
+		val := retrieveConfigFromEnv(envKey(testEnvKey))
+		assert.Equal(t, testEnvValue, val)
+	})
+
+	t.Run("not_present", func(t *testing.T) {
+		val := retrieveConfigFromEnv(envKey(testEnvKey))
+		assert.Equal(t, "", val)
 	})
 }
 

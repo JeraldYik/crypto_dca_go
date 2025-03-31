@@ -74,6 +74,8 @@ func TestInit(u *ConfigUpdateable, now *time.Time) {
 			Host:     "db_host",
 			Username: "db_username",
 			Password: "db_password",
+			ApiUrl:   "db_api_url",
+			ApiKey:   "db_api_key",
 		},
 		Sentry: Sentry{
 			Dsn: "sentry_dsn",

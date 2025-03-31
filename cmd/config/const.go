@@ -23,6 +23,8 @@ const (
 	dbPassword_EnvKey envKey = "DB_PASSWORD"
 	dbName_EnvKey     envKey = "DB_NAME"
 	dbHost_EnvKey     envKey = "DB_HOST"
+	dbApiUrl_EnvKey   envKey = "DB_API_URL"
+	dbApiKey_EnvKey   envKey = "DB_API_KEY"
 	sentryDsn_EnvKey  envKey = "SENTRY_DSN"
 )
 

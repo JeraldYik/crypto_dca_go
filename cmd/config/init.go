@@ -48,17 +48,23 @@ func initConfig() *Config {
 	columnRanges := mustRetrieveConfigFromEnv(columnRanges_EnvKey)
 	config.GoogleSheet.columnRanges = mustTransformJsonStringToMappedCryptoTickers[string](columnRanges_EnvKey, config, columnRanges)
 
-	dbUserName := mustRetrieveConfigFromEnv(dbUsername_EnvKey)
+	dbUserName := retrieveConfigFromEnv(dbUsername_EnvKey)
 	config.Db.Username = dbUserName
 
-	dbPassword := mustRetrieveConfigFromEnv(dbPassword_EnvKey)
+	dbPassword := retrieveConfigFromEnv(dbPassword_EnvKey)
 	config.Db.Password = dbPassword
 
-	dbName := mustRetrieveConfigFromEnv(dbName_EnvKey)
+	dbName := retrieveConfigFromEnv(dbName_EnvKey)
 	config.Db.Name = dbName
 
-	dbHost := mustRetrieveConfigFromEnv(dbHost_EnvKey)
+	dbHost := retrieveConfigFromEnv(dbHost_EnvKey)
 	config.Db.Host = dbHost
+
+	dbApiUrl := retrieveConfigFromEnv(dbApiUrl_EnvKey)
+	config.Db.ApiUrl = dbApiUrl
+
+	dbApiKey := retrieveConfigFromEnv(dbApiKey_EnvKey)
+	config.Db.ApiKey = dbApiKey
 
 	sentryDsn := mustRetrieveConfigFromEnv(sentryDsn_EnvKey)
 	config.Sentry.Dsn = sentryDsn

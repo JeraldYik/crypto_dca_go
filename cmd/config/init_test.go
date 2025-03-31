@@ -34,6 +34,8 @@ func Test_initConfig(t *testing.T) {
 		os.Setenv(string(dbPassword_EnvKey), "db_password")
 		os.Setenv(string(dbName_EnvKey), "db_name")
 		os.Setenv(string(dbHost_EnvKey), "db_host")
+		os.Setenv(string(dbApiUrl_EnvKey), "db_api_url")
+		os.Setenv(string(dbApiKey_EnvKey), "db_api_key")
 		os.Setenv(string(sentryDsn_EnvKey), "sentry_dsn")
 
 		// expected

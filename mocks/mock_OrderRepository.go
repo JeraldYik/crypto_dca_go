@@ -9,7 +9,7 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 	db "github.com/jeraldyik/crypto_dca_go/cmd/service/db"
-	gorm "gorm.io/gorm"
+	supabase "github.com/supabase-community/supabase-go"
 )
 
 // MockOrderRepository is a mock of OrderRepository interface.
@@ -50,10 +50,10 @@ func (mr *MockOrderRepositoryMockRecorder) BulkInsert(rows interface{}) *gomock.
 }
 
 // GetDB mocks base method.
-func (m *MockOrderRepository) GetDB() *gorm.DB {
+func (m *MockOrderRepository) GetDB() *supabase.Client {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetDB")
-	ret0, _ := ret[0].(*gorm.DB)
+	ret0, _ := ret[0].(*supabase.Client)
 	return ret0
 }
 

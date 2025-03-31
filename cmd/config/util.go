@@ -29,6 +29,11 @@ func mustRetrieveConfigFromEnv(key envKey) string {
 	return val
 }
 
+func retrieveConfigFromEnv(key envKey) string {
+	val, _ := os.LookupEnv(string(key))
+	return val
+}
+
 // Can contain square brackets or without
 func mustTransformArrayStringToArray(arrayString string) []string {
 	// to check for square brackets

@@ -42,12 +42,14 @@ type GoogleSheet struct {
 	rowRanges                  map[string]int
 }
 
-// Using ElephantDB
+// Using Supabase
 type Db struct {
 	Name     string
 	Host     string
 	Username string
 	Password string
+	ApiUrl   string
+	ApiKey   string
 }
 
 type Sentry struct {
