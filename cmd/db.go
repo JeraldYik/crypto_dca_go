@@ -21,6 +21,8 @@ func formRows(postOrders *treemap.Map) []*db.Order {
 			FiatDepositInSGD:  postOrder.ActualFiatDeposit,
 			PricePerCoinInSGD: postOrder.AvgExecutionPrice,
 			CoinAmount:        postOrder.ExecutedAmount,
+			CreatedAt:         config.GetTime().Now(),
+			UpdatedAt:         config.GetTime().Now(),
 		}
 		i++
 	}

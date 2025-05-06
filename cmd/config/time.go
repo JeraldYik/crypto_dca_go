@@ -34,3 +34,7 @@ func (t Time) GetTodayDate() time.Time {
 func (t Time) GetNowDateString() string {
 	return t.now.Format("02/01/2006")
 }
+
+func (t Time) Now() time.Time {
+	return t.now
+}

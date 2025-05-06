@@ -32,6 +32,8 @@ func Test_formRows(t *testing.T) {
 				FiatDepositInSGD:  1.002,
 				PricePerCoinInSGD: 1000,
 				CoinAmount:        1,
+				CreatedAt:         config.GetTime().Now(),
+				UpdatedAt:         config.GetTime().Now(),
 			},
 			{
 				Ticker:            "ethsgd",
@@ -39,6 +41,8 @@ func Test_formRows(t *testing.T) {
 				FiatDepositInSGD:  2.004,
 				PricePerCoinInSGD: 1000,
 				CoinAmount:        1,
+				CreatedAt:         config.GetTime().Now(),
+				UpdatedAt:         config.GetTime().Now(),
 			},
 		}, got)
 	})
