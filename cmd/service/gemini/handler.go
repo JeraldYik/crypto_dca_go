@@ -46,7 +46,7 @@ func (api *Api) MatchActiveOrders(ticker string) (*Order, error) {
 		return nil, err
 	}
 	for _, order := range orders {
-		if order != nil && order.Symbol == AppendTickerWithQuoteCurrency(ticker) {
+		if order != nil && order.Symbol == AppendTickerWithQuoteCurrency(ticker) && order.Side == "buy" {
 			return order, nil
 		}
 	}

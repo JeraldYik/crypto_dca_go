@@ -64,7 +64,7 @@ func (api *Api) getActiveOrders() ([]*Order, error) {
 		return nil, err
 	}
 
-	logger.Info(location, "orders: %+v", orders)
+	logger.Info(location, "orders: %v", util.SafeJsonDump(orders))
 
 	return orders, nil
 }
