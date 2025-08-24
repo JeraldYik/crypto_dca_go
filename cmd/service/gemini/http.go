@@ -87,6 +87,14 @@ func (api *Api) request(verb, path string, params map[string]any) ([]byte, error
 	}
 	defer resp.Body.Close()
 
+	// read response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	logger.Info(location, "response.body: %v", string(body))
+
 	if resp.StatusCode != 200 {
 		statusCode := fmt.Sprintf("HTTP Status Code: %d", resp.StatusCode)
 		if resp.StatusCode >= 300 && resp.StatusCode < 400 {
@@ -109,14 +117,6 @@ func (api *Api) request(verb, path string, params map[string]any) ([]byte, error
 			return nil, fmt.Errorf("%s --- %s", statusCode, "The exchange is down for maintenance")
 		}
 	}
-
-	// read response body
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	logger.Info(location, "response.body: %v", string(body))
 
 	return body, nil
 }
